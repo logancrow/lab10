@@ -1,0 +1,1 @@
+.\tachin.o: TachIn.c
