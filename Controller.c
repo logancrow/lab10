@@ -14,15 +14,15 @@
 
 uint32_t rpm;
 uint32_t speed;
+uint32_t kp1;
+uint32_t kp2;
+uint32_t ki1;
+uint32_t ki2;
 
 double P;
 double I = 0.5;
 double U;
-double kp1 = 50;
-double kp2 = 50;
-double ki1 = 200;
-double ki2 = 70;
-double E = 500; // = Tau
+double E;
 
 //Initializes all inputs and outputs
 //inputs: none
@@ -39,18 +39,21 @@ void ControllerInit(){
 //outputs: none
 void MotorController(){
 	//use rpm and speed values to create PI equeation for new duty
+	//20,00 <= U <= 39,000
+	//50% <= duty cycle <= 97.5%
+	E = speed - rpm;
 	P = (kp1 * E) / kp2;
 	I = I + (ki1 * E) / ki2;
 	U = P + I;
-	PWM0A_Duty(U); 
+	PWM0A_Duty(U);
 }
 
 //converts rpm to speed
 //inputs: rpm (global variable)
 //outputs: speed
 uint32_t RpmToSpeed() {
-	double speed = (double)(rpm * 3.14);
-	return speed;
+	double out = (double)(rpm * 3.14);
+	return out;
 }
 
 //Receives input from Tachometer and outputs to LCD and BLYNK

@@ -28,7 +28,7 @@ void DisplayInit(){
 //Displays current speed on ST7735
 //inputs: current speed
 //outputs: none
-void DisplaySpeed(uint32_t speed, uint32_t P, uint32_t I){
+void DisplaySpeed(uint32_t P, uint32_t I){
 	ST7735_SetCursor(4,0);
 	ST7735_OutUDec(rpm);
 	ST7735_SetCursor(3,1);
@@ -36,7 +36,7 @@ void DisplaySpeed(uint32_t speed, uint32_t P, uint32_t I){
 	ST7735_SetCursor(3,2);
 	ST7735_OutUDec(I);
 	
-	ST7735_PlotPoint(speed);
+	ST7735_PlotPoint(RpmToSpeed());
 	if (j < 100) {
 		ST7735_PlotNextErase();
 	}

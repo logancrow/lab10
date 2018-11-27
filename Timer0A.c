@@ -36,7 +36,7 @@ void EnableInterrupts(void);  // Enable interrupts
 
 clock_t start; //time of last revolution
 uint32_t count; //count of number of PB0 +edges
-// 4 (0...1...2...3) --> 1 revolution
+// 8 (0...1...2...3...4...5...6...7) --> 1 revolution
 
 // ***************** Timer0A_Init ****************
 // Activate TIMER0 interrupts to run user task periodically
@@ -72,7 +72,7 @@ void Timer0A_Init(){
 void Timer0A_Handler(void){
 	TIMER0_ICR_R = 0x04;      // acknowledge timer0A
 	count++;
-	if (count == 3) {
+	if (count == 7) {
 		rpm = (uint32_t)((double)(60 / ((double)(clock() - start) / CLOCKS_PER_SEC)));
 		count = 0;
 		start = clock();

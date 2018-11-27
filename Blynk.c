@@ -105,7 +105,7 @@ void Blynk_to_TM4C(void){
     } 
   // ---------------------------- VP #2 ----------------------------------------
   // This VP is the KP_1 select button 
-	/*	if (pin_num == 0x02) {
+		if (pin_num == 0x02) {
 			kp1 = pin_int;
 		}
 	// ---------------------------- VP #3 ----------------------------------------
@@ -127,7 +127,7 @@ void Blynk_to_TM4C(void){
   // This VP is the E select button 
 		if (pin_num == 0x020) {
 			E = pin_int;
-		}*/
+		}
 
   }  
 }
