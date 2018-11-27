@@ -28,8 +28,3 @@ uint32_t RpmToSpeed(void);
 
 extern uint32_t rpm;
 extern uint32_t speed;
-extern uint32_t kp1;
-extern uint32_t kp2;
-extern uint32_t ki1;
-extern uint32_t ki2;
-extern uint32_t E;

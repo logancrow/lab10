@@ -14,15 +14,15 @@
 
 uint32_t rpm;
 uint32_t speed;
-uint32_t kp1;
-uint32_t kp2;
-uint32_t ki1;
-uint32_t ki2;
-uint32_t E; // =Tau
 
 double P;
 double I = 0.5;
 double U;
+double kp1 = 50;
+double kp2 = 50;
+double ki1 = 200;
+double ki2 = 70;
+double E = 500; // = Tau
 
 //Initializes all inputs and outputs
 //inputs: none
@@ -49,8 +49,7 @@ void MotorController(){
 //inputs: rpm (global variable)
 //outputs: speed
 uint32_t RpmToSpeed() {
-	uint32_t speed;
-	
+	double speed = (double)(rpm * 3.14);
 	return speed;
 }
 
@@ -58,5 +57,5 @@ uint32_t RpmToSpeed() {
 //inputs: none
 //outputs: none
 void DisplayController(){
-	DisplaySpeed(rpm);
+	DisplaySpeed(speed, P, I);
 }

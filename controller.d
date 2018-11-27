@@ -5,3 +5,4 @@
 .\controller.o: Display.h
 .\controller.o: TachIn.h
 .\controller.o: PWM.h
+.\controller.o: Timer0A.h

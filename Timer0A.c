@@ -73,7 +73,7 @@ void Timer0A_Handler(void){
 	TIMER0_ICR_R = 0x04;      // acknowledge timer0A
 	count++;
 	if (count == 3) {
-		rpm = (int)((double)(60 / ((double)(clock() - start) / CLOCKS_PER_SEC)));
+		rpm = (uint32_t)((double)(60 / ((double)(clock() - start) / CLOCKS_PER_SEC)));
 		count = 0;
 		start = clock();
 	}
