@@ -15,6 +15,9 @@ void ControllerInit(void);
 void MotorController(void);
 
 //Receives input from Tachometer and outputs to LCD and BLYNK
-//inputs: motor speed
+//inputs: none
 //outputs: none
-void DisplayController(uint32_t);
+void DisplayController(void);
+
+extern uint32_t rpm;
+extern uint32_t speed;

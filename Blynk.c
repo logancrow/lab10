@@ -109,7 +109,9 @@ void Blynk_to_TM4C(void){int j; char data;
   // ---------------------------- VP #1 ----------------------------------------
   // This VP is the LED select button
     if(pin_num == 0x01)  {  
-      LED = pin_int;
+      speed = pin_int;
+			//equation to calibrate speed
+			
      // PortF_Output(LED<<2); // Blue LED
 /*#ifdef DEBUG3
       Output_Color(ST7735_CYAN);
@@ -135,7 +137,7 @@ void SendInformation(void){
   thisF = PortF_Input();
 // your account will be temporarily halted if you send too much data
   //if(thisF != LastF){
-  //TM4C_to_Blynk(74, hours);  // VP74
+  TM4C_to_Blynk(70, rpm);  // VP74
 
 	
 /*#ifdef DEBUG3
@@ -167,7 +169,8 @@ int main(void){
   ESP8266_Reset();      // Reset the WiFi module
   ESP8266_SetupWiFi();  // Setup communications to Blynk Server 
 	ST7735_InitR(INITR_REDTAB);
-	ST7735_FillScreen(ST7735_BLACK);       	
+	ST7735_FillScreen(ST7735_BLACK);  
+  ControllerInit();	
   
   Timer2_Init(&Blynk_to_TM4C,80000); 
   // check for receive data from Blynk App every 1ms
@@ -175,6 +178,10 @@ int main(void){
   Timer3_Init(&SendInformation,40000000); 
   // Send data back to Blynk App every 1/2 second
   EnableInterrupts();
+	while(1){
+		MotorController();
+		DisplayController();
+	}
 }
 
 

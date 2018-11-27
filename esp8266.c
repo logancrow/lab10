@@ -31,7 +31,7 @@
 char    ssid[32]        =/* "WIFIF93CA0"//(logan's wifi)*/"EE-IOT-Platform-03";
 char    pass[32]        =/* "V4Q5SYAJI7GLRJCV";(logan's wifi)*/"dUQQE?&W44x7";
 // create your own Blynk server app and edit this next line with your authentication code
-char    auth[64]        = "d34a397b50c3482b9f4967208c8a5d03";
+char    auth[64]        = "1c537bb44fbb4757b8e5d712539f4a8f";
 
 #define UART_FR_RXFF            0x00000040  // UART Receive FIFO Full
 #define UART_FR_TXFF            0x00000020  // UART Transmit FIFO Full
