@@ -11,4 +11,4 @@ void DisplayInit(void);
 //Displays current speed on ST7735
 //inputs: current speed
 //outputs: none
-void DisplaySpeed(uint32_t);
+void DisplaySpeed(void);

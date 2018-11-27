@@ -21,10 +21,3 @@ void TachInit(){
   GPIO_PORTB_DEN_R |= 0x01;          // 7) enable digital I/O on PB0
 }
 
-//captures input from tachometer
-//inputs: none
-//outputs: value from tachometer
-uint32_t TachCapture(){
-	uint32_t cur_rpm;
-	return cur_rpm;
-}

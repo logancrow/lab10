@@ -29,6 +29,6 @@
 // Activate Timer0A interrupts to run user task at 1Hz
 // Inputs:  none
 // Outputs: none
-void Timer0A_Init1Hz(void);
+void Timer0A_Init(void);
 
 #endif // __TIMER0AINTS_H__

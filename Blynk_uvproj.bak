@@ -451,24 +451,29 @@
               <FilePath>.\PortF.c</FilePath>
             </File>
             <File>
-              <FileName>alarm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\alarm.c</FilePath>
-            </File>
-            <File>
               <FileName>controller.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\controller.c</FilePath>
             </File>
             <File>
-              <FileName>line.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\line.c</FilePath>
-            </File>
-            <File>
               <FileName>Timer0A.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Timer0A.c</FilePath>
+            </File>
+            <File>
+              <FileName>PWM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\PWM.c</FilePath>
+            </File>
+            <File>
+              <FileName>Display.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Display.c</FilePath>
+            </File>
+            <File>
+              <FileName>TachIn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\TachIn.c</FilePath>
             </File>
           </Files>
         </Group>

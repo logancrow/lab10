@@ -26,48 +26,55 @@
  http://users.ece.utexas.edu/~valvano/
  */
 #include <stdint.h>
+#include <time.h>
 #include "..//inc//tm4c123gh6pm.h"
 #include "controller.h"
-
-#define PF1             (*((volatile uint32_t *)0x40025008))
-#define PF2             (*((volatile uint32_t *)0x40025010))
+#include "Timer0A.h"
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
-long StartCritical (void);    // previous I bit, disable interrupts
-void EndCritical(long sr);    // restore I bit to previous value
-void WaitForInterrupt(void);  // low power mode
-void (*PeriodicTask)(void);   // user function
+
+clock_t start; //time of last revolution
+uint32_t count; //count of number of PB0 +edges
+// 4 (0...1...2...3) --> 1 revolution
 
 // ***************** Timer0A_Init ****************
 // Activate TIMER0 interrupts to run user task periodically
 // Inputs:  task is a pointer to a user function
 //          period in units (1/clockfreq), 32 bits
 // Outputs: none
-void Timer0A_Init1Hz(){
+void Timer0A_Init(){
 	volatile uint32_t delay;
 	DisableInterrupts();
-  SYSCTL_RCGCTIMER_R |= 0x00000001;   // 0) activate TIMER0
-	delay = SYSCTL_RCGCTIMER_R;      // allow time to finish activating
-  TIMER0_CTL_R = 0x00000000;    // 1) disable TIMER0A during setup
-  TIMER0_CFG_R = 0x00000000;    // 2) configure for 32-bit mode
-  TIMER0_TAMR_R = TIMER_TAMR_TAMR_PERIOD;   // 3) configure for periodic mode, default down-count settings
-  //TIMER0_TAMR_R = 0x00000002;
-	TIMER0_TAILR_R = 80000000 - 1;      // 4) reload value (1Hz)
-  TIMER0_TAPR_R = 0x00000000;            // 5) bus clock resolution
-  TIMER0_ICR_R = 0x00000001;    // 6) clear TIMER0A timeout flag
-  TIMER0_IMR_R = 0x00000001;    // 7) arm timeout interrupt
-  NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x80000000; // 8) priority 4
-// interrupts enabled in the main program after all devices initialized
-// vector number 35, interrupt number 19
-  NVIC_EN0_R = 1<<19;           // 9) enable IRQ 19 in NVIC
-  TIMER0_CTL_R = 0x00000001;    // 10) enable TIMER0A
-	
+	start = clock();
+	count = 0;
+  SYSCTL_RCGCTIMER_R |= 0x01; // activate TIMER0
+	SYSCTL_RCGCTIMER_R |= 0x02; 			// activate GPIO Port B
+	delay = SYSCTL_RCGCTIMER_R;       // allow time to finish activating
+	GPIO_PORTB_DIR_R &= ~0x01;				// PB0 = input
+	GPIO_PORTB_AFSEL_R |= 0x01;				// enable alt function on PB0
+	GPIO_PORTB_DEN_R |= 0x01;					// configure PB0 as T0CCP0
+	GPIO_PORTB_PCTL_R = (GPIO_PORTB_PCTL_R & 0x0F0FFFFFF) + 0x07000000;
+  TIMER0_CTL_R &= ~0x01;    			  // disable TIMER0A during setup
+  TIMER0_CFG_R = 0;					        // configure for 32-bit capture mode
+  TIMER0_TAMR_R = 0x07;             // configure for rising edge event
+  TIMER0_CTL_R &= ~0x0C;            // rising edge
+	TIMER0_TAILR_R = 0x0FFFF;      // start value
+  TIMER0_TAPR_R = 0xFF;             // activate prescale, creating 24-bit
+  TIMER0_IMR_R = 0x04;        // enable capture match interrupt
+  TIMER0_ICR_R = 0x04;        // clear TIMER0A capture match flag
+  TIMER0_CTL_R |= 0x01;             // timer0A 24-bit, +edge, interrupts
+  NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x40000000; // priority 2
+  NVIC_EN0_R = 1<<19;           // enable IRQ 19 in NVIC
+  TIMER0_CTL_R = 0x01;    // enable TIMER0A
 }
 
 void Timer0A_Handler(void){
-	TIMER0_ICR_R = TIMER_ICR_TATOCINT;
-	PF2 ^= 0x04;
-	PF2 ^= 0x04;
-	PF2 ^= 0x04;
+	TIMER0_ICR_R = 0x04;      // acknowledge timer0A
+	count++;
+	if (count == 3) {
+		rpm = (int)((double)(60 / ((double)(clock() - start) / CLOCKS_PER_SEC)));
+		count = 0;
+		start = clock();
+	}
 }
