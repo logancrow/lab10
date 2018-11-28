@@ -106,9 +106,15 @@ void Timer0A_Init(){
   EndCritical(sr);
 }
 
+uint32_t i = 0;
 void Timer0A_Handler(void){
   TIMER0_ICR_R = 0x04;// acknowledge timer0A capture match
+	if (i <= 10) {
+	ST7735_SetCursor(0,i);
+	ST7735_OutUDec(TIMER0_TAR_R);
+	i++;
+	}
 	rpm = 600000000 / ((First - TIMER0_TAR_R) & 0x00FFFFFF);  
 	First = TIMER0_TAR_R;
-	DisplayController();
+	//DisplayController();
 }
