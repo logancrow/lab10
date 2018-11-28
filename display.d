@@ -3,3 +3,4 @@
 .\display.o: Display.h
 .\display.o: ST7735.h
 .\display.o: Controller.h
+.\display.o: fixed.h

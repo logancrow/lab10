@@ -4,3 +4,5 @@
 .\timer0a.o: ..//inc//tm4c123gh6pm.h
 .\timer0a.o: controller.h
 .\timer0a.o: Timer0A.h
+.\timer0a.o: ST7735.h
+.\timer0a.o: Display.h

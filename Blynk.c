@@ -80,15 +80,24 @@ void TM4C_to_Blynk(uint32_t pin,uint32_t value){
   ESP8266_OutChar(',');
   ESP8266_OutString("0.0\n");  // Null value not used in this example
 }
- 
- 
+
 // -------------------------   Blynk_to_TM4C  -----------------------------------
 // This routine receives the Blynk Virtual Pin data via the ESP8266 and parses the
 // data and feeds the commands to the TM4C.
-void Blynk_to_TM4C(void){
+void Blynk_to_TM4C(void){int j; char data;
 // Check to see if a there is data in the RXD buffer
   if(ESP8266_GetMessage(serial_buf)){  // returns false if no message
-		
+    // Read the data from the UART5
+#ifdef DEBUG1
+    j = 0;
+    do{
+      data = serial_buf[j];
+      UART_OutChar(data);        // Debug only
+      j++;
+    }while(data != '\n');
+    UART_OutChar('\r');        
+#endif
+           
 // Rip the 3 fields out of the CSV data. The sequence of data from the 8266 is:
 // Pin #, Integer Value, Float Value.
     strcpy(Pin_Number, strtok(serial_buf, ","));
@@ -96,39 +105,39 @@ void Blynk_to_TM4C(void){
     strcpy(Pin_Float, strtok(NULL, ","));         // Not used
     pin_num = atoi(Pin_Number);     // Need to convert ASCII to integer
     pin_int = atoi(Pin_Integer);  
-		
   // ---------------------------- VP #1 ----------------------------------------
   // This VP is the LED select button
-    if (pin_num == 0x01) {  
+    if(pin_num == 0x01)  {  
       speed = pin_int;
-			//equation to calibrate speed
-    } 
-  // ---------------------------- VP #2 ----------------------------------------
-  // This VP is the KP_1 select button 
-		if (pin_num == 0x02) {
+     // PortF_Output(LED<<2); // Blue LED
+/*#ifdef DEBUG3
+      Output_Color(ST7735_CYAN);
+      ST7735_OutString("Rcv VP1 data=");
+      ST7735_OutUDec(LED);
+      ST7735_OutChar('\n');
+#endif */
+    }                               // Parse incoming data
+		if(pin_num == 0x02){
 			kp1 = pin_int;
 		}
-	// ---------------------------- VP #3 ----------------------------------------
-  // This VP is the KP_2 select button 
-		if (pin_num == 0x04) {
+		if(pin_num == 0x03){
 			kp2 = pin_int;
 		}
-	// ---------------------------- VP #4 ----------------------------------------
-  // This VP is the KI_1 select button 
-		if (pin_num == 0x08) {
+		if(pin_num == 0x04){
 			ki1 = pin_int;
 		}
-	// ---------------------------- VP #5 ----------------------------------------
-  // This VP is the KI_2 select button 
-		if (pin_num == 0x010) {
+		if(pin_num == 0x05){
 			ki2 = pin_int;
 		}
-	// ---------------------------- VP #6 ----------------------------------------
-  // This VP is the E select button 
-		if (pin_num == 0x020) {
-			E = pin_int;
-		}
-
+/*#ifdef DEBUG1
+    UART_OutString(" Pin_Number = ");
+    UART_OutString(Pin_Number);
+    UART_OutString("   Pin_Integer = ");
+    UART_OutString(Pin_Integer);
+    UART_OutString("   Pin_Float = ");
+    UART_OutString(Pin_Float);
+    UART_OutString("\n\r");
+#endif */
   }  
 }
 
@@ -173,19 +182,21 @@ void SendInformation(void){
 
 int main (void) {
 	PLL_Init(Bus80MHz);   		// Bus clock at 80 MHz
+	//PortF_Init();
 	DisableInterrupts();			// disable interrupts during init
 	UART_Init(5);        		  // Enable Debug Serial Port
 	ESP8266_Init();     		  // Enable ESP8266 Serial Port
-	ESP8266_Reset();      		// Reset the WiFi module
 	ST7735_InitR(INITR_REDTAB);
+	ESP8266_Reset();      		// Reset the WiFi module
 	ESP8266_SetupWiFi();  		// Setup communications to Blynk Server 
 	ControllerInit();					// initialize motor controller
 	Timer2_Init(&Blynk_to_TM4C,80000); // timer for Blynk Server Comm
+	Timer3_Init(&SendInformation,40000000); 
 	EnableInterrupts();
-	
 	while (1) {
 		Blynk_to_TM4C();
 		MotorController();
+		//DisplayController();
 	}
 }
 

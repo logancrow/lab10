@@ -28,10 +28,10 @@ double E;
 //inputs: none
 //outputs: none
 void ControllerInit(){
-	DisplayInit();
 	//TachInit();
 	Timer0A_Init();
-	PWM0A_Init(4000,0);
+	PWM0B_Init(40000,1000);
+	DisplayInit();
 }
 
 //Receives input from Blynk and outputs to motor
@@ -45,7 +45,15 @@ void MotorController(){
 	P = (kp1 * E) / kp2;
 	I = I + (ki1 * E) / ki2;
 	U = P + I;
-	PWM0A_Duty(U);
+	if (U > 39000) {
+		PWM0B_Duty(39000);
+	}
+	else if (U < 20000) {
+		PWM0B_Duty(20000);
+	}
+	else {
+		PWM0B_Duty(U);
+	}
 }
 
 //converts rpm to speed
@@ -60,5 +68,5 @@ uint32_t RpmToSpeed() {
 //inputs: none
 //outputs: none
 void DisplayController(){
-	DisplaySpeed(speed, P, I);
+	DisplaySpeed(P, I);
 }

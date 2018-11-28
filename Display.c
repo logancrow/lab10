@@ -7,6 +7,7 @@
 #include "Display.h"
 #include "ST7735.h"
 #include "Controller.h"
+#include "fixed.h"
 
 uint32_t j;
 
@@ -29,19 +30,22 @@ void DisplayInit(){
 //inputs: current speed
 //outputs: none
 void DisplaySpeed(uint32_t P, uint32_t I){
-	ST7735_SetCursor(4,0);
+	ST7735_SetCursor(6,0);
 	ST7735_OutUDec(rpm);
-	ST7735_SetCursor(3,1);
+	ST7735_OutString("         ");
+	ST7735_SetCursor(4,1);
 	ST7735_OutUDec(P);
-	ST7735_SetCursor(3,2);
+	ST7735_SetCursor(4,2);
 	ST7735_OutUDec(I);
+	ST7735_SetCursor(0,3);
+	ST7735_OutUDec(speed);
 	
-	ST7735_PlotPoint(RpmToSpeed());
+	/*ST7735_PlotPoint(RpmToSpeed());
 	if (j < 100) {
 		ST7735_PlotNextErase();
 	}
 	else {
 		j = 0;
 	}
-	j++;
+	j++;*/
 }
