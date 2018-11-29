@@ -11,6 +11,7 @@
 #include "TachIn.h"
 #include "PWM.h"
 #include "Timer0A.h"
+#include "ST7735.h"
 
 uint32_t rpm;
 uint32_t speed;
@@ -19,10 +20,10 @@ uint32_t kp2;
 uint32_t ki1;
 uint32_t ki2;
 
-double P;
-double I = 0.5;
-double U;
-double E;
+int32_t P;
+int32_t I = 0;
+uint16_t U;
+int32_t E;
 
 //Initializes all inputs and outputs
 //inputs: none

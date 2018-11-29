@@ -98,6 +98,7 @@ void Timer0A_Init(){
   TIMER0_CTL_R &= ~(TIMER_CTL_TAEVENT_POS|0xC);
   TIMER0_TAILR_R = TIMER_TAILR_M;  // max start value
   TIMER0_IMR_R |= TIMER_IMR_CAEIM; // enable capture match interrupt
+	TIMER0_TAPR_R = 0xFF; 					 // 24 bit mode
   TIMER0_ICR_R = TIMER_ICR_CAECINT;// clear timer0A capture match flag
   TIMER0_CTL_R |= TIMER_CTL_TAEN;  // enable timer0A 16-b, +edge timing, interrupts
                                    // Timer0A=priority 2
@@ -109,12 +110,14 @@ void Timer0A_Init(){
 uint32_t i = 0;
 void Timer0A_Handler(void){
   TIMER0_ICR_R = 0x04;// acknowledge timer0A capture match
-	if (i <= 10) {
+	/*if (i <= 10) {
 	ST7735_SetCursor(0,i);
 	ST7735_OutUDec(TIMER0_TAR_R);
 	i++;
+	}*/
+	uint32_t temp = 600000000 / ((First - TIMER0_TAR_R) & 0x00FFFFFF);  
+	if (temp < 2000 && temp > 400) {
+		rpm = temp;
 	}
-	rpm = 600000000 / ((First - TIMER0_TAR_R) & 0x00FFFFFF);  
 	First = TIMER0_TAR_R;
-	//DisplayController();
 }

@@ -182,7 +182,6 @@ void SendInformation(void){
 
 int main (void) {
 	PLL_Init(Bus80MHz);   		// Bus clock at 80 MHz
-	//PortF_Init();
 	DisableInterrupts();			// disable interrupts during init
 	UART_Init(5);        		  // Enable Debug Serial Port
 	ESP8266_Init();     		  // Enable ESP8266 Serial Port
@@ -196,7 +195,7 @@ int main (void) {
 	while (1) {
 		Blynk_to_TM4C();
 		MotorController();
-		//DisplayController();
+		DisplayController();
 	}
 }
 

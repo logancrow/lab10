@@ -6,3 +6,4 @@
 .\controller.o: TachIn.h
 .\controller.o: PWM.h
 .\controller.o: Timer0A.h
+.\controller.o: ST7735.h
